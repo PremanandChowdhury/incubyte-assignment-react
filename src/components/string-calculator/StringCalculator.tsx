@@ -14,19 +14,27 @@ const StringCalculator: React.FC = () => {
     setResult(sum || 0);
   };
 
-  const add = (input: string): number => {
+  const add = (input: string): number | string => {
     let sum = 0;
     const negativeNumbers: number[] = [];
 
     const nums = input.replace(/\\n/g, ",").replace(/\n/g, ",").split(",");
-    sum = nums.reduce((acc, num) => {
-      const parsedNum = parseInt(num.trim(), 10);
-      if (parsedNum < 0) {
-        negativeNumbers.push(parsedNum);
-      }
+    console.log("nums", nums);
 
-      return acc + parsedNum;
-    }, 0);
+    sum = nums
+      .filter((num) => num.trim() !== "")
+      .reduce((acc, num) => {
+        const parsedNum = parseInt(num.trim(), 10);
+        if (parsedNum < 0) {
+          negativeNumbers.push(parsedNum);
+        }
+
+        return acc + parsedNum;
+      }, 0);
+
+    if (negativeNumbers.length > 0) {
+      return "negative numbers not allowed: " + negativeNumbers.join(", ");
+    }
 
     return sum;
   };
@@ -53,7 +61,7 @@ const StringCalculator: React.FC = () => {
       </button>
 
       <div data-testid="result" className="result">
-        {result && `Result: ${result}`}
+        {result && `${result}`}
       </div>
     </div>
   );

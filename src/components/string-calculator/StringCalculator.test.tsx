@@ -50,4 +50,33 @@ describe("String Calculator Component", () => {
     expect(screen.getByTestId("result")).toHaveTextContent("6");
   });
 
+  it("handle negative numbers", () => {
+    render(<StringCalculator />);
+
+    fireEvent.change(screen.getByTestId("input-field"), {
+      target: {
+        value: "1, -2, 3",
+      },
+    });
+
+    fireEvent.click(screen.getByTestId("calculate-button"));
+    expect(screen.getByTestId("result")).toHaveTextContent(
+      "negative numbers not allowed: -2"
+    );
+  });
+
+  it("handle multiple negative numbers", () => {
+    render(<StringCalculator />);
+
+    fireEvent.change(screen.getByTestId("input-field"), {
+      target: {
+        value: "1, -2, 3, -6",
+      },
+    });
+
+    fireEvent.click(screen.getByTestId("calculate-button"));
+    expect(screen.getByTestId("result")).toHaveTextContent(
+      "negative numbers not allowed: -2, -6"
+    );
+  });
 });
