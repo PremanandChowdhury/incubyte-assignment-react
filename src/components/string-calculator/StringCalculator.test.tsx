@@ -2,7 +2,7 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import StringCalculator from "./StringCalculator";
 
 describe("String Calculator Component", () => {
-  it("renders required elements", () => {
+  it("renders component elements", () => {
     render(<StringCalculator />);
 
     const divContainerElement = screen.getByTestId("input-container");
@@ -25,4 +25,29 @@ describe("String Calculator Component", () => {
     fireEvent.click(screen.getByTestId("calculate-button"));
     expect(screen.getByTestId("result")).toHaveTextContent("0");
   });
+
+  it("calculates the sum with comma separated numbers", () => {
+    render(<StringCalculator />);
+
+    fireEvent.change(screen.getByTestId("input-field"), {
+      target: {
+        value: "1, 2, 3",
+      },
+    });
+    fireEvent.click(screen.getByTestId("calculate-button"));
+    expect(screen.getByTestId("result")).toHaveTextContent("6");
+  });
+
+  it("handle new line as delimeter", () => {
+    render(<StringCalculator />);
+
+    fireEvent.change(screen.getByTestId("input-field"), {
+      target: {
+        value: "1\n2,3",
+      },
+    });
+    fireEvent.click(screen.getByTestId("calculate-button"));
+    expect(screen.getByTestId("result")).toHaveTextContent("6");
+  });
+
 });

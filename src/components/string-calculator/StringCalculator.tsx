@@ -10,21 +10,25 @@ const StringCalculator: React.FC = () => {
   };
 
   const handleCalculate = () => {
-    const sum = calculateSum(inputString);
+    const sum = add(inputString);
     setResult(sum || 0);
   };
 
-  const calculateSum = (input: string) => {
-    try {
-      if (input.trim() === "") return 0;
+  const add = (input: string): number => {
+    let sum = 0;
+    const negativeNumbers: number[] = [];
 
-      const delimeter = ",";
-      const numbers = input.split(delimeter);
-      return numbers.reduce((acc, num) => acc + parseInt(num), 0);
-      
-    } catch (error) {
-      return (error as Error).message || "Error occurred while calculating sum";
-    }
+    const nums = input.replace(/\\n/g, ",").replace(/\n/g, ",").split(",");
+    sum = nums.reduce((acc, num) => {
+      const parsedNum = parseInt(num.trim(), 10);
+      if (parsedNum < 0) {
+        negativeNumbers.push(parsedNum);
+      }
+
+      return acc + parsedNum;
+    }, 0);
+
+    return sum;
   };
 
   return (
