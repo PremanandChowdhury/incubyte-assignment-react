@@ -17,7 +17,11 @@ const StringCalculator: React.FC = () => {
   const calculateSum = (input: string) => {
     try {
       if (input.trim() === "") return 0;
-     
+
+      const delimeter = ",";
+      const numbers = input.split(delimeter);
+      return numbers.reduce((acc, num) => acc + parseInt(num), 0);
+      
     } catch (error) {
       return (error as Error).message || "Error occurred while calculating sum";
     }
