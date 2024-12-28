@@ -5,38 +5,49 @@ const StringCalculator: React.FC = () => {
   const [inputString, setInputString] = useState<string>("");
   const [result, setResult] = useState<number | string | null>("");
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setInputString(event.target.value);
   };
 
   const handleCalculate = () => {
-    const sum = add(inputString);
-    setResult(sum || 0);
+    const inputValue = inputString.trim();
+
+    try {
+      const sum = add(inputValue);
+      setResult(sum || 0);
+    } catch (error) {
+      if (error instanceof Error) {
+        setResult(error.message);
+      }
+    }
   };
 
   const add = (input: string): number | string => {
-    let sum = 0;
-    const negativeNumbers: number[] = [];
+    if (!input) return 0;
 
-    const nums = input.replace(/\\n/g, ",").replace(/\n/g, ",").split(",");
-    console.log("nums", nums);
+    let delimiter = /\n|,/; // Default delimiters: comma or newline
 
-    sum = nums
-      .filter((num) => num.trim() !== "")
-      .reduce((acc, num) => {
-        const parsedNum = parseInt(num.trim(), 10);
-        if (parsedNum < 0) {
-          negativeNumbers.push(parsedNum);
-        }
-
-        return acc + parsedNum;
-      }, 0);
-
-    if (negativeNumbers.length > 0) {
-      return "negative numbers not allowed: " + negativeNumbers.join(", ");
+    if (input.startsWith("//")) {
+      const match = input.match(/^\/\/(.+)\n/);
+      if (match) {
+        delimiter = new RegExp(match[1]);
+        input = input.split("\n").slice(1).join("\n");
+      }
     }
 
-    return sum;
+    // Split the input string by the delimiter (comma or newline)
+    const nums = input.split(delimiter).map((num) => {
+      const parsedNum = parseInt(num.trim(), 10);
+      if (isNaN(parsedNum)) throw new Error(`Invalid number: ${num}`);
+      return parsedNum;
+    });
+
+    const negatives = nums.filter((num) => num < 0);
+    if (negatives.length > 0) {
+      throw new Error(`negative numbers not allowed: ${negatives.join(", ")}`);
+    }
+
+    return nums.reduce((sum, num) => sum + num, 0);
   };
 
   return (
@@ -44,8 +55,8 @@ const StringCalculator: React.FC = () => {
       <label htmlFor="input-field" data-testid="input-label">
         Enter input string
       </label>
-      <input
-        type="text"
+      <textarea
+        style={{ width: "100%", fontSize: "1rem", padding: 0 }}
         data-testid="input-field"
         placeholder="e.g., 1,2,3 or //;\n1;2"
         value={inputString}

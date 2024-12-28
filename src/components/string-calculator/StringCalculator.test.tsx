@@ -79,4 +79,30 @@ describe("String Calculator Component", () => {
       "negative numbers not allowed: -2, -6"
     );
   });
+
+  it("handle custom delimiter in the string", () => {
+    render(<StringCalculator />);
+
+    fireEvent.change(screen.getByTestId("input-field"), {
+      target: {
+        value: "//;\n1;2",
+      },
+    });
+
+    fireEvent.click(screen.getByTestId("calculate-button"));
+    expect(screen.getByTestId("result")).toHaveTextContent("3");
+  });
+
+  it("handle custom delimiter in the string", () => {
+    render(<StringCalculator />);
+
+    fireEvent.change(screen.getByTestId("input-field"), {
+      target: {
+        value: "//!\n1!2!3!4",
+      },
+    });
+
+    fireEvent.click(screen.getByTestId("calculate-button"));
+    expect(screen.getByTestId("result")).toHaveTextContent("10");
+  })
 });
