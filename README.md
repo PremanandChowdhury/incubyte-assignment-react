@@ -8,6 +8,6 @@ React, TypeScript, React-testing Library, Jest
 
 Deployed to Vercel:
 
-[_Assignment Deployed Link_]()
+[_Assignment Deployed Link_](https://incubyte-assignment-react.vercel.app/)
 
 Developed by: [Premanand Chowdhury](https://www.linkedin.com/in/premanand-chowdhury/)
