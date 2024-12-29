@@ -72,6 +72,16 @@ body {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  border: 1px dashed #ccc
+  border: 1px dashed #ccc;
+  color: #333
 }
 
+.result.error {
+  --danger: rgb(160, 28, 28);
+  --danger-light: rgb(255, 230, 230);
+
+  color: var(--danger);
+  border-color: (--danger);
+  background-color: var(--danger-light);
+  border-color: var(--danger-light);
+}

@@ -24,6 +24,7 @@ const StringCalculator: React.FC = () => {
 
   const add = (input: string): number | string => {
     if (!input) return 0;
+    input = input.replace(/\\n/g, "\n");
 
     let delimiter = /\n|,/; // Default delimiters: comma or newline
 
@@ -31,11 +32,11 @@ const StringCalculator: React.FC = () => {
       const match = input.match(/^\/\/(.+)\n/);
       if (match) {
         delimiter = new RegExp(match[1]);
-        input = input.split("\n").slice(1).join("\n");
+        input = input.slice(match[0].length);
+      } else {
+        throw new Error("Could not parse the delimiter");
       }
     }
-
-    // Split the input string by the delimiter (comma or newline)
     const nums = input.split(delimiter).map((num) => {
       const parsedNum = parseInt(num.trim(), 10);
       if (isNaN(parsedNum)) throw new Error(`Invalid number: ${num}`);
@@ -49,6 +50,9 @@ const StringCalculator: React.FC = () => {
 
     return nums.reduce((sum, num) => sum + num, 0);
   };
+
+  const isError =
+    result && typeof result === "string" && result.includes("negative");
 
   return (
     <div className="input-container" data-testid="input-container">
@@ -71,7 +75,7 @@ const StringCalculator: React.FC = () => {
         Calculate
       </button>
 
-      <div data-testid="result" className="result">
+      <div data-testid="result" className={`result ${isError ? "error" : ""}`}>
         {result && `${result}`}
       </div>
     </div>
